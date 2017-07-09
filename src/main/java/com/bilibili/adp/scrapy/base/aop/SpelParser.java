@@ -47,7 +47,8 @@ public class SpelParser {
     }
      
   public static void main(String[] args) {
-      String key="'getAudioListByBIdNo.'+#bIdNo";
+      String key="#item.userId";
+      
       try {
           System.out.println(getKey(key, "", new String[]{"bIdNo"}, new Object[]{"B19001084"}));
       } catch (Exception e) {

@@ -21,7 +21,7 @@ public class ReflectParamNames {
 			Method method = getMethod(c, methodName, obj);
 			
 			String[] tempArr = u.getParameterNames(method);
-			String[] result = new String[tempArr.length + 1];
+			String[] result = new String[tempArr.length];
 			for (int i = 0; i < tempArr.length; i++) {
 				result[i] = tempArr[i];
 			}

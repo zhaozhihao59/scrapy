@@ -44,10 +44,11 @@ public class Application
 	
 	@Bean
 	public Executor myExecutor(){
-		
 		ThreadPoolTaskExecutor executor = new ThreadPoolTaskExecutor();
-		executor.setCorePoolSize(env.getProperty("poolSize",Integer.class));
-		executor.setMaxPoolSize(env.getProperty("maxPoolSize",Integer.class));
+		executor.setCorePoolSize(8);
+//		env.getProperty("poolSize",Integer.class)
+//		env.getProperty("maxPoolSize",Integer.class)
+		executor.setMaxPoolSize(8);
 		executor.initialize();
 		return executor;
 	}
@@ -68,7 +69,7 @@ public class Application
 		JedisPoolConfig poolConfig = new JedisPoolConfig();
 		poolConfig.setMaxIdle(env.getProperty("redis.maxActive", Integer.class));
 		poolConfig.setMaxTotal(env.getProperty("redis.maxTotal", Integer.class));
-		poolConfig.setMinIdle(env.getProperty("redis.minIdle", Integer.class));
+		poolConfig.setMinIdle(env.getProperty("redis.minActive", Integer.class));
 		poolConfig.setMaxWaitMillis(env.getProperty("redis.maxWait", Long.class));
 		return poolConfig;
 	}

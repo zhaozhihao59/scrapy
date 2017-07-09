@@ -35,7 +35,7 @@ public class HttpUtil {
 	 * @param url
 	 * @return
 	 */
-	public static String loadContentByGetMethod(String url,Header header) throws Exception{
+	public static String loadContentByGetMethod(String url,List<Header> headers) throws Exception{
 		String result = null;
 		
 		/* 1 生成 HttpClinet 对象并设置参数 */
@@ -47,7 +47,10 @@ public class HttpUtil {
 		/* 2 生成 GetMethod 对象并设置参数 */
 		HttpGet getMethod = new HttpGet(url);
 		try {
-			getMethod.addHeader(header);
+			for (Header header : headers) {
+				getMethod.addHeader(header);
+			}
+			
 			// 设置 get 请求超时为 10 秒
 			RequestConfig requestConfig = RequestConfig.custom().setSocketTimeout(10000).setConnectTimeout(10000).setConnectionRequestTimeout(10000).build();
 			getMethod.setConfig(requestConfig);

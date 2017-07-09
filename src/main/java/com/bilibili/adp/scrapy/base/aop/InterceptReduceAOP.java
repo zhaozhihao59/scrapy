@@ -12,6 +12,7 @@ import org.springframework.core.annotation.Order;
 import org.springframework.stereotype.Component;
 
 import com.bilibili.adp.scrapy.base.util.RedisCacheUtil;
+import com.bilibili.adp.scrapy.base.util.Utils;
 
 @Aspect
 @Component
@@ -25,6 +26,54 @@ public class InterceptReduceAOP {
 	private void getPointcut(MyReduce reduce){
 		
 	}
+	@Pointcut(value = "@annotation(reduce)")
+	private void getPointcutFollow(ReduceFollow reduce){
+		
+	}
+	@Around("getPointcutFollow(reduce)")
+	public Object preProcessQueryFollowPattern(ProceedingJoinPoint point,ReduceFollow reduce) throws Throwable{
+        String targetName = point.getTarget().getClass().getName();
+        String simpleName = point.getTarget().getClass().getSimpleName();
+        String methodName = point.getSignature().getName();
+        Object[] arguments = point.getArgs();
+        
+        String key = null;
+////        没传key
+//        if (intercept.curDate().length() > 0) {
+//        	key = "'"+simpleName+"."+methodName + ".'+" +  intercept.curDate();
+//        }else{
+            key = reduce.key();
+          
+//        }
+         
+        String[] paramNames = ParamNameMap.get(key);
+        if (paramNames == null){
+//          反射得到形参名称
+            paramNames = ReflectParamNames.getNames(targetName, methodName,arguments);
+            ParamNameMap.put(key, paramNames);
+        }
+         
+        if(reduce.key().length() > 0){
+//          spring EL 表达式
+        	int startFix = reduce.key().indexOf("#");
+        	if(startFix >= 0){
+        		key = SpelParser.getKey(key, "", paramNames, arguments);
+        	}
+        }
+         
+        Object object = redisCacheUtil.getCacheValue(reduce.cacheName(), key);
+        if(object != null){
+        	Integer v = Integer.valueOf(object.toString());
+        	if(v == 0){
+        		return null;
+        	}
+        }
+//     
+         Object target = point.proceed();
+         redisCacheUtil.putCacheValue(reduce.cacheName(), key,0);
+        return target;
+	}
+	
 	@Around("getPointcut(reduce)")
 	public Object preProcessQueryPattern(ProceedingJoinPoint point,MyReduce reduce) throws Throwable{
         String targetName = point.getTarget().getClass().getName();
@@ -37,7 +86,7 @@ public class InterceptReduceAOP {
 //        if (intercept.curDate().length() > 0) {
 //        	key = "'"+simpleName+"."+methodName + ".'+" +  intercept.curDate();
 //        }else{
-            key = simpleName+"."+methodName;
+            key = reduce.key();
           
 //        }
          
@@ -49,38 +98,32 @@ public class InterceptReduceAOP {
         }
         
          
-//        if(reduce.curDate().length() > 0){
-////          spring EL 表达式
-//        	int startFix = reduce.curDate().indexOf("#");
-//        	if(startFix >= 0){
-//        		key = SpelParser.getKey(key, reduce.curDate(), paramNames, arguments);
-//        	}
-//        }
+        if(reduce.key().length() > 0){
+//          spring EL 表达式
+        	int startFix = reduce.key().indexOf("#");
+        	if(startFix >= 0){
+        		key = SpelParser.getKey(key, "", paramNames, arguments);
+        	}
+        }
          
         Object object = redisCacheUtil.getCacheValue(reduce.cacheName(), key);
         if(object != null){
-        	int v = Integer.valueOf(object.toString());
+        	Integer v = Integer.valueOf(object.toString());
         	if(v == 0){
         		return null;
+        	}else {
+        		Object z = arguments[0];
+        		Utils.setField(z,"id",v.longValue());
+        		return z;
         	}
         }
-//      重新加载时不走缓存
-//        if(!Cache.reLoad()){
-            
-//        }
-         
-         
-//        if (object!=null){
-//            return object;
-//        }
+//     
          Object target = point.proceed();
          if (target != null){
-//        	redisCacheUtil.putCacheValue(RedisCacheConstant.db_etl_not_clean_table, key, 1);
-//           memcache.set(key, target, Cache.second());
-//           logger.info("+++ key:"+key+" set cache 耗时： " + (endTime - startTime)  + "毫秒");
+        	 redisCacheUtil.putCacheValue(reduce.cacheName(), key,Utils.getField(target, "id"));
+         }else{
+        	 redisCacheUtil.putCacheValue(reduce.cacheName(), key,0);
          }
-            //拦截的放参数类型
-//       Class[] parameterTypes = ((MethodSignature)point.getSignature()).getMethod().getParameterTypes();
         return target;
 	}
 }

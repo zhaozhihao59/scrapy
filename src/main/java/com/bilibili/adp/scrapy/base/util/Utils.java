@@ -7,12 +7,15 @@ import java.io.IOException;
 import java.io.InputStreamReader;
 import java.io.ObjectInputStream;
 import java.io.ObjectOutputStream;
+import java.lang.reflect.Field;
 
 import javax.servlet.ServletInputStream;
 import javax.servlet.http.HttpServletRequest;
 
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
+
+import com.alibaba.fastjson.JSONObject;
 
 /**
  * 工具集合包
@@ -22,18 +25,17 @@ import org.apache.commons.logging.LogFactory;
 public class Utils {
 	
 	private static Log logger = LogFactory.getLog(Utils.class);
-	public static String hostUrl = "";
 	
-	public static String table_info  = "/admin/tableInfo.htm";
-	
-	public static String databases_info = "/admin/databasesInfo.htm";
-	
-	public static String api_info = "/admin/sqlData.htm";
-	
-	public static void init(){
-		table_info = hostUrl + table_info;
-		databases_info = hostUrl + databases_info;
-		api_info = hostUrl + api_info;
+	public static void setField(Object source,String fieldName,Object val) throws NoSuchFieldException, SecurityException, IllegalArgumentException, IllegalAccessException{
+		 Field field = source.getClass().getDeclaredField(fieldName);
+		 field.setAccessible(true);
+		 field.set(source,val);
+	}
+	public static Object getField(Object source,String fieldName) throws IllegalArgumentException, IllegalAccessException, NoSuchFieldException, SecurityException{
+		Field field = source.getClass().getDeclaredField(fieldName);
+		field.setAccessible(true);
+		return field.get(source);
+		
 	}
 	/**
 	 * 深度复制
@@ -69,6 +71,13 @@ public class Utils {
 		}
 		return null;
 	}
+	
+	public static void removeKey(JSONObject obj,String... keys ){
+		for (String key : keys) {
+			obj.remove(key);
+		}
+	}
+	
 	public static void main(String[] args) {
 	}
 	

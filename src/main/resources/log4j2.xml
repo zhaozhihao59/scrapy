@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <configuration status="warn" monitorInterval="60">
     <properties>
-        <property name="LOG_FILE_PATH">${sys:catalina.home}/logs</property>
+        <property name="LOG_FILE_PATH">D:/logs</property>
         <property name="LOG_FILE_NAME">scrapy</property>
         <property name="LOG_LEVEL">info</property>
         <property name="LOG_REMAIN">10</property>

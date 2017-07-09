@@ -1,0 +1,147 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.bilibili.adp.scrapy.reduce.dao.IFollowDao">
+	<resultMap type="follow" id="followResultMap" >
+		<!--  -->
+		<result property="id" column="ID" />
+		<!-- 用户ID -->
+		<result property="menberId" column="menber_id" />
+		<!-- 跟随者ID -->
+		<result property="followId" column="follow_id" />
+		<!-- 用户名 -->
+		<result property="userName" column="user_name" />
+		<!-- 性别：0-男 1-女 -->
+		<result property="sex" column="sex" />
+		<!-- 简单的自我介绍 -->
+		<result property="introduce" column="introduce" />
+		<!-- 创建时间 -->
+		<result property="ctime" column="ctime" />
+		<!-- 修改时间 -->
+		<result property="utime" column="utime" />
+		<!-- 0-未删除 1-已删除 -->
+		<result property="isDelete" column="is_delete" />
+		<!-- 0-未删除 1-已删除 -->
+		<result property="picUrl" column="pic_url" />
+	</resultMap>
+
+
+	<sql id="allColumnSql">
+		o.ID,
+		o.menber_id,
+		o.follow_id,
+		o.user_name,
+		o.sex,
+		o.introduce,
+		o.ctime,
+		o.utime,
+		o.is_delete,
+		o.pic_url
+	</sql>
+
+
+	<sql id="searchConditionSql">
+		<if test="condition.userName != null and condition.userName != ''">
+			AND o.user_name like '%${condition.userName}%'
+		</if>
+		<if test="condition.introduce != null and condition.introduce != ''">
+			AND o.introduce like '%${condition.introduce}%'
+		</if>
+	</sql>
+
+	<select id="listFollowAll" resultMap="followResultMap">
+		SELECT <include refid="allColumnSql"/>
+		FROM follow o
+	</select>
+
+	<select id="getFollowByPageCount" resultType="int">
+		SELECT count(1)
+		FROM follow o
+		WHERE 1=1 <include refid="searchConditionSql"/>
+	</select>
+
+	<select id="listFollowByPage" resultMap="followResultMap">
+		SELECT <include refid="allColumnSql"/>
+		FROM follow o
+		WHERE 1=1 <include refid="searchConditionSql"/>
+	</select>
+
+	<select id="getFollowById" resultMap="followResultMap">
+		SELECT <include refid="allColumnSql"/>
+		FROM follow o
+		WHERE o.ID = #{id}
+	</select>
+	<select id="getFollowByItem" resultMap="followResultMap">
+		SELECT <include refid="allColumnSql"/>
+		FROM follow o
+		WHERE o.menber_id = #{item.menberId} and o.follow_id = #{item.followId}
+	</select>
+
+	<insert id="add" parameterType="follow" useGeneratedKeys="true" keyProperty="id">
+		INSERT INTO follow
+		(
+		menber_id,
+		follow_id,
+		user_name,
+		sex,
+		introduce,
+		pic_url
+		)
+		VALUES
+		(
+		<![CDATA[
+		#{menberId},
+		#{followId},
+		#{userName},
+		#{sex},
+		#{introduce},
+		#{picUrl}
+		]]>
+		)
+		</insert>
+
+	<insert id="batchInsert" >
+		INSERT INTO follow
+		(
+		menber_id,
+		follow_id,
+		user_name,
+		sex,
+		introduce,
+		pic_url
+		)
+		VALUES
+		<foreach collection="list" index="index" item="item" separator=",">
+		(
+		#{item.menberId},
+		#{item.followId},
+		#{item.userName},
+		#{item.sex},
+		#{item.introduce},
+		#{item.picUrl}
+		)
+		</foreach>
+		</insert>
+
+	<update id="update" parameterType="follow">
+		UPDATE follow SET
+		menber_id = #{menberId},
+		follow_id = #{followId},
+		forus_id = #{forusId},
+		user_name = #{userName},
+		sex = #{sex},
+		introduce = #{introduce},
+		ctime = #{ctime},
+		utime = #{utime},
+		is_delete = #{isDelete}
+		WHERE ID = #{id}
+	</update>
+
+	<delete id="delByIds">
+		DELETE FROM follow
+		WHERE ID IN
+		<foreach collection="array" index="index" item="item" open="(" separator="," close=")">
+			#{item}
+		</foreach>
+	</delete>
+
+</mapper>
