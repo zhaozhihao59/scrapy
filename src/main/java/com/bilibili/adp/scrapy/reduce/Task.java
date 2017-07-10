@@ -23,8 +23,8 @@ public class Task {
 	public void start() throws Exception{
 		logger.info("start ....................................");
 		commonService.reduceZhiHuUser();
-		
-		TimeUnit.HOURS.sleep(8);;
+		logger.info("end.....................................");
+		TimeUnit.HOURS.sleep(10);;
 	}
 	
 	

@@ -61,7 +61,7 @@ public class InterceptReduceAOP {
         	}
         }
          
-        Object object = redisCacheUtil.getCacheValue(reduce.cacheName(), key);
+        Object object = redisCacheUtil.getCacheValue(reduce.cacheName(),reduce.cacheName() +  key);
         if(object != null){
         	Integer v = Integer.valueOf(object.toString());
         	if(v == 0){
@@ -69,8 +69,8 @@ public class InterceptReduceAOP {
         	}
         }
 //     
-         Object target = point.proceed();
-         redisCacheUtil.putCacheValue(reduce.cacheName(), key,0);
+        Object target = point.proceed();
+        redisCacheUtil.putCacheValue(reduce.cacheName(),reduce.cacheName() +  key,0);
         return target;
 	}
 	
@@ -106,7 +106,7 @@ public class InterceptReduceAOP {
         	}
         }
          
-        Object object = redisCacheUtil.getCacheValue(reduce.cacheName(), key);
+        Object object = redisCacheUtil.getCacheValue(reduce.cacheName(),reduce.cacheName() + key);
         if(object != null){
         	Integer v = Integer.valueOf(object.toString());
         	if(v == 0){
@@ -120,9 +120,9 @@ public class InterceptReduceAOP {
 //     
          Object target = point.proceed();
          if (target != null){
-        	 redisCacheUtil.putCacheValue(reduce.cacheName(), key,Utils.getField(target, "id"));
+        	 redisCacheUtil.putCacheValue(reduce.cacheName(),reduce.cacheName() + key,Utils.getField(target, "id"));
          }else{
-        	 redisCacheUtil.putCacheValue(reduce.cacheName(), key,0);
+        	 redisCacheUtil.putCacheValue(reduce.cacheName(),reduce.cacheName() + key,0);
          }
         return target;
 	}
