@@ -24,7 +24,7 @@ public class Task {
 		logger.info("start ....................................");
 		commonService.reduceZhiHuUser();
 		logger.info("end.....................................");
-		TimeUnit.HOURS.sleep(10);;
+		TimeUnit.HOURS.sleep(4);;
 	}
 	
 	
