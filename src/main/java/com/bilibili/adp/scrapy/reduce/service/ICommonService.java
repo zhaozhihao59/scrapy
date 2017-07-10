@@ -7,7 +7,7 @@ import com.bilibili.adp.scrapy.reduce.entity.Member;
 
 public interface ICommonService {
 	
-	void reduceZhiHuUser() throws Exception;
+	void reduceZhiHuUser(String url_token) throws Exception;
 
 	Member addMember(JSONObject tempJsonObj);
 

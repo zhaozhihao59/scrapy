@@ -54,12 +54,10 @@ public class CommonServiceImpl implements ICommonService{
 		headerList.add(new BasicHeader("authorization", "Bearer Mi4wQUJCTURPWU1ud2dBZ0FJZDl0c0VEQmNBQUFCaEFsVk5Ib09FV1FBLTN2SzlmV1V3ekh3VFAwbGItRHFIMnNwMzZB|1499264542|fd82d6e956e0f6a52b396f053526013ad4a6129a"));
 	}
 	@Override
-	public void reduceZhiHuUser() throws Exception {
-		String url = "https://www.zhihu.com/people/mo-lu-6-36";
-		String urlName = url.substring(url.lastIndexOf("/") + 1,url.length());
-	 	Member curMember = addMember(taskCommonServiceImpl.getJsonObject(urlName));
-	 	taskCommonServiceImpl.reduceFollow(curMember.getId(), urlName, curMember.getFollows());
-	 	taskCommonServiceImpl.reduceConcern(curMember.getId(), urlName, curMember.getConcerns());
+	public void reduceZhiHuUser(String urlToken) throws Exception {
+	 	Member curMember = addMember(taskCommonServiceImpl.getJsonObject(urlToken));
+	 	taskCommonServiceImpl.reduceFollow(curMember.getId(), urlToken, curMember.getFollows());
+	 	taskCommonServiceImpl.reduceConcern(curMember.getId(), urlToken, curMember.getConcerns());
 	 	
 	}
 	

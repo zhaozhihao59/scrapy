@@ -86,6 +86,7 @@ public class TaskCommonServiceImpl{
 	@Async
 	@ReduceFollow(cacheName = "reduceConcern" , key = "#sId+#urlToken")
 	public void reduceConcern(Long sId,String urlToken,Integer count) throws Exception{
+		logger.info( urlToken +" concern start.............  concern count :" + count);
 		String detailUrl = "https://www.zhihu.com/api/v4/members/" + urlToken + "/followees?";
 		String params = "include=data%5B*%5D.answer_count%2Carticles_count%2Cgender%2Cfollower_count%2Cis_followed%2Cis_following%2Cbadge%5B%3F(type%3Dbest_answerer)%5D.topics";
 		int size = 20;
@@ -116,6 +117,7 @@ public class TaskCommonServiceImpl{
 	@Async
 	@ReduceFollow(cacheName = "reduceFollow" ,key = "#sId + #urlToken")
 	public void reduceFollow(Long sId,String urlToken,Integer count) throws Exception{
+		logger.info( urlToken +" follow start.............  follows count :" + count);
 		String detailUrl = "https://www.zhihu.com/api/v4/members/" + urlToken + "/followers?";
 		String params = "include=data%5B*%5D.answer_count%2Carticles_count%2Cgender%2Cfollower_count%2Cis_followed%2Cis_following%2Cbadge%5B%3F(type%3Dbest_answerer)%5D.topics";
 		int size = 20;

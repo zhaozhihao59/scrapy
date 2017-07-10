@@ -19,10 +19,10 @@ public class Task {
 	@Resource
 	private TaskCommonServiceImpl taskCommonServiceImpl;
 	private Log logger = LogFactory.getLog(getClass());
-	@Scheduled(cron = "* * * * * ?")
+//	@Scheduled(cron = "* * * * * ?")
 	public void start() throws Exception{
 		logger.info("start ....................................");
-		commonService.reduceZhiHuUser();
+//		commonService.reduceZhiHuUser(urlToken);
 		logger.info("end.....................................");
 		TimeUnit.HOURS.sleep(4);;
 	}
