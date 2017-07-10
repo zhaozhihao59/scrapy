@@ -2,6 +2,7 @@ package com.bilibili.adp.scrapy.reduce.service.impl;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Random;
 import java.util.concurrent.TimeUnit;
 
 import javax.annotation.Resource;
@@ -42,6 +43,12 @@ public class TaskCommonServiceImpl{
 	@Resource(name = "commonServiceImpl")
 	private ICommonService commonServiceImpl;
 	
+	private static ThreadLocal<Random> local = new ThreadLocal<Random>(){
+		protected Random initialValue() {
+			return new Random();
+		};
+	};   
+	
 	private Follow addFollow(Long sId,Member member){
 		Follow item = new Follow();
 		item.setFollowId(member.getId());
@@ -81,12 +88,13 @@ public class TaskCommonServiceImpl{
 	public void reduceConcern(Long sId,String urlToken,Integer count) throws Exception{
 		String detailUrl = "https://www.zhihu.com/api/v4/members/" + urlToken + "/followees?";
 		String params = "include=data%5B*%5D.answer_count%2Carticles_count%2Cgender%2Cfollower_count%2Cis_followed%2Cis_following%2Cbadge%5B%3F(type%3Dbest_answerer)%5D.topics";
-		int size = 500;
+		int size = 20;
 		int pages = count / size + (count %size == 0?0:1);
 		List<JSONObject> list = new ArrayList<>();
 		for (int i = 0; i < pages; i++) {
 			int offset = i * size;
 			String url = detailUrl + params + "&offset="+offset+"&limit="+size;
+			Thread.sleep(local.get().nextInt(1000));
 			String resultStr = HttpUtil.loadContentByGetMethod(url, CommonServiceImpl.headerList);
 			JSONObject pageObj = JSON.parseObject(resultStr);
 			JSONArray jsonArr = pageObj.getJSONArray("data");
@@ -110,12 +118,13 @@ public class TaskCommonServiceImpl{
 	public void reduceFollow(Long sId,String urlToken,Integer count) throws Exception{
 		String detailUrl = "https://www.zhihu.com/api/v4/members/" + urlToken + "/followers?";
 		String params = "include=data%5B*%5D.answer_count%2Carticles_count%2Cgender%2Cfollower_count%2Cis_followed%2Cis_following%2Cbadge%5B%3F(type%3Dbest_answerer)%5D.topics";
-		int size = 500;
+		int size = 20;
 		int pages = count / size + (count %size == 0?0:1);
 		List<JSONObject> list = new ArrayList<>();
 		for (int i = 0; i < pages; i++) {
 			int offset = i * size;
 			String url = detailUrl + params + "&offset="+offset+"&limit="+size;
+			Thread.sleep(local.get().nextInt(1000));
 			String resultStr = HttpUtil.loadContentByGetMethod(url, CommonServiceImpl.headerList);
 			JSONObject pageObj = JSON.parseObject(resultStr);
 			JSONArray jsonArr = pageObj.getJSONArray("data");
