@@ -9,7 +9,7 @@ import org.springframework.stereotype.Component;
 @Component
 public class DBUseTimeServiceImpl implements PublicMetrics{
 	
-	private ConcurrentHashMap<String, Metric<?>> writer = new ConcurrentHashMap<>();  
+	private final ConcurrentHashMap<String, Metric<?>> writer = new ConcurrentHashMap<>();  
 	private final ConcurrentHashMap<String, String> names = new ConcurrentHashMap<String, String>();
 	private final ConcurrentHashMap<String, Double> vals = new ConcurrentHashMap<>();
 
