@@ -8,6 +8,8 @@ import org.aspectj.lang.ProceedingJoinPoint;
 import org.aspectj.lang.annotation.Around;
 import org.aspectj.lang.annotation.Aspect;
 import org.aspectj.lang.annotation.Pointcut;
+import org.springframework.boot.actuate.metrics.CounterService;
+import org.springframework.boot.actuate.metrics.GaugeService;
 import org.springframework.core.annotation.Order;
 import org.springframework.stereotype.Component;
 
@@ -20,6 +22,8 @@ import com.bilibili.adp.scrapy.base.util.Utils;
 public class InterceptReduceAOP {
 	
 	private Log logger = LogFactory.getLog(InterceptReduceAOP.class);
+	@Resource
+	private DBUseTimeServiceImpl dbUseTimeServiceImpl;
 	@Resource
 	private RedisCacheUtil redisCacheUtil;
 	@Pointcut(value = "@annotation(reduce)")
@@ -105,7 +109,7 @@ public class InterceptReduceAOP {
         		key = SpelParser.getKey(key, "", paramNames, arguments);
         	}
         }
-         
+        
         Object object = redisCacheUtil.getCacheValue(reduce.cacheName(),reduce.cacheName() + key);
         if(object != null){
         	Integer v = Integer.valueOf(object.toString());
@@ -118,7 +122,10 @@ public class InterceptReduceAOP {
         	}
         }
 //     
+        long start = System.currentTimeMillis();
          Object target = point.proceed();
+         long end = System.currentTimeMillis();
+         dbUseTimeServiceImpl.submit(reduce.cacheName(), end - start);
          if (target != null){
         	 redisCacheUtil.putCacheValue(reduce.cacheName(),reduce.cacheName() + key,Utils.getField(target, "id"));
          }else{

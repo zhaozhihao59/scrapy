@@ -10,6 +10,7 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.ResponseBody;
 
+import com.bilibili.adp.scrapy.base.aop.DBUseTimeServiceImpl;
 import com.bilibili.adp.scrapy.base.controller.BaseController;
 import com.bilibili.adp.scrapy.reduce.Task;
 import com.bilibili.adp.scrapy.reduce.service.ICommonService;
@@ -24,6 +25,8 @@ public class IndexController extends BaseController{
 	private Task task;
 	@Resource
 	private ICommonService commonService;
+	@Resource
+	private DBUseTimeServiceImpl dbUseTimeServiceImpl;
 	@ApiOperation("存入url")
 	@RequestMapping(value = "/putUrl")
 	@ResponseBody
@@ -48,5 +51,11 @@ public class IndexController extends BaseController{
 		map.put("status", Status.success);
 		commonService.reduceZhiHuUser(url_token);
 		return map;
+	}
+	@RequestMapping(value = "/hello")
+	@ResponseBody
+	public String hello(){
+		dbUseTimeServiceImpl.submit("hello", 2);
+		return "hello";
 	}
 }
