@@ -89,6 +89,7 @@ public class CommonServiceImpl implements ICommonService{
 	 	item.setMemberData(jsonObj.toJSONString());
 	 	Member temp = memberService.add(item);
 	 	item.setId(temp.getId());
+	 	Member resultMember = new Member();
 	 	return item;
 	}
 	

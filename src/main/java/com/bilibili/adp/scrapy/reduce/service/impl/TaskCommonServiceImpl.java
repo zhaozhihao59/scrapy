@@ -103,8 +103,10 @@ public class TaskCommonServiceImpl{
 				JSONObject jsonObj = (JSONObject) object;
 				String tempToken = jsonObj.getString("url_token");
 				JSONObject tempJsonObj = getJsonObject(tempToken);
-				Member tempMember = commonServiceImpl.addMember(tempJsonObj);
-				addConcern(sId, tempMember);
+				if(tempJsonObj != null){
+					Member tempMember = commonServiceImpl.addMember(tempJsonObj);
+				}
+				addConcern(sId, jsonObj);
 				JSONObject obj = new JSONObject();
 				obj.put("urlToken", tempToken);
 				obj.put("count", tempMember.getConcerns());
