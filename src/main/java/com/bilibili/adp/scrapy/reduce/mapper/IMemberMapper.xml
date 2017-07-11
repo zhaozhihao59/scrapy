@@ -35,12 +35,18 @@
 		o.sex,
 		o.introduce,
 		o.c_describe,
-		member_data,
-		pic_url,
-		concerns,
-		follows
+		o.member_data,
+		o.pic_url,
+		o.concerns,
+		o.follows
 	</sql>
-
+	<sql id="reloadMember">
+		o.ID,
+		o.user_id,
+		o.sex,
+		o.concerns,
+		o.follows
+	</sql>
 
 	<sql id="searchConditionSql">
 		<if test="condition.userId != null and condition.userId != ''">

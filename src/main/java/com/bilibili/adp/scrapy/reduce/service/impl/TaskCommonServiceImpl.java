@@ -18,6 +18,7 @@ import org.springframework.transaction.annotation.Transactional;
 import com.alibaba.fastjson.JSON;
 import com.alibaba.fastjson.JSONArray;
 import com.alibaba.fastjson.JSONObject;
+import com.bilibili.adp.scrapy.base.aop.DBUseTimeServiceImpl;
 import com.bilibili.adp.scrapy.base.aop.MyReduce;
 import com.bilibili.adp.scrapy.base.aop.ReduceFollow;
 import com.bilibili.adp.scrapy.base.util.HttpUtil;
@@ -42,6 +43,8 @@ public class TaskCommonServiceImpl{
 	private IConcernService  concernService;
 	@Resource(name = "commonServiceImpl")
 	private ICommonService commonServiceImpl;
+	@Resource
+	private DBUseTimeServiceImpl dbUseTimeServiceImpl;
 	
 	private static ThreadLocal<Random> local = new ThreadLocal<Random>(){
 		protected Random initialValue() {
@@ -49,26 +52,26 @@ public class TaskCommonServiceImpl{
 		};
 	};   
 	
-	private Follow addFollow(Long sId,Member member){
+	private Follow addFollow(Long sId,JSONObject jsonObj,Long tId){
 		Follow item = new Follow();
-		item.setFollowId(member.getId());
+		item.setFollowId(tId);
 		item.setMenberId(sId);
-		item.setIntroduce(member.getIntroduce());
-		item.setUserName(member.getUserName());
-		item.setPicUrl(member.getPicUrl());
-		item.setSex(member.getSex());
+		item.setIntroduce(jsonObj.getString("headline"));
+		item.setUserName(jsonObj.getString("name"));
+		item.setPicUrl(jsonObj.getString("avatar_url"));
+		item.setSex(jsonObj.getInteger("gender"));
 		followService.add(item);
 		return item;
 	}
 	@Transactional(propagation = Propagation.REQUIRES_NEW)
-	public Concern addConcern(Long sId,Member member){
+	public Concern addConcern(Long sId,JSONObject jsonObj,Long tId){
 		Concern item = new Concern();
-		item.setFollowId(member.getId());
+		item.setFollowId(tId);
 		item.setMenberId(sId);
-		item.setIntroduce(member.getIntroduce());
-		item.setUserName(member.getUserName());
-		item.setPicUrl(member.getPicUrl());
-		item.setSex(member.getSex());
+		item.setIntroduce(jsonObj.getString("headline"));
+		item.setUserName(jsonObj.getString("name"));
+		item.setPicUrl(jsonObj.getString("avatar_url"));
+		item.setSex(jsonObj.getInteger("gender"));
 		concernService.add(item);
 		return item;
 	}
@@ -96,17 +99,17 @@ public class TaskCommonServiceImpl{
 			int offset = i * size;
 			String url = detailUrl + params + "&offset="+offset+"&limit="+size;
 			Thread.sleep(local.get().nextInt(1000));
+			long start = System.currentTimeMillis();
 			String resultStr = HttpUtil.loadContentByGetMethod(url, CommonServiceImpl.headerList);
+			long end = System.currentTimeMillis();
+			dbUseTimeServiceImpl.submit("reduceConcernNet", (end - start));
 			JSONObject pageObj = JSON.parseObject(resultStr);
 			JSONArray jsonArr = pageObj.getJSONArray("data");
 			for (Object object : jsonArr) {
 				JSONObject jsonObj = (JSONObject) object;
 				String tempToken = jsonObj.getString("url_token");
-				JSONObject tempJsonObj = getJsonObject(tempToken);
-				if(tempJsonObj != null){
-					Member tempMember = commonServiceImpl.addMember(tempJsonObj);
-				}
-				addConcern(sId, jsonObj);
+				Member tempMember = commonServiceImpl.reduceMember(tempToken);
+				addConcern(sId, jsonObj,tempMember.getId());
 				JSONObject obj = new JSONObject();
 				obj.put("urlToken", tempToken);
 				obj.put("count", tempMember.getConcerns());
@@ -129,15 +132,17 @@ public class TaskCommonServiceImpl{
 			int offset = i * size;
 			String url = detailUrl + params + "&offset="+offset+"&limit="+size;
 			Thread.sleep(local.get().nextInt(1000));
+			long start = System.currentTimeMillis();
 			String resultStr = HttpUtil.loadContentByGetMethod(url, CommonServiceImpl.headerList);
+			long end = System.currentTimeMillis();
+			dbUseTimeServiceImpl.submit("reduceFollowNet", (end - start));
 			JSONObject pageObj = JSON.parseObject(resultStr);
 			JSONArray jsonArr = pageObj.getJSONArray("data");
 			for (Object object : jsonArr) {
 				JSONObject jsonObj = (JSONObject) object;
 				String tempToken = jsonObj.getString("url_token");
-				JSONObject tempJsonObj = getJsonObject(tempToken);
-				Member tempMember = commonServiceImpl.addMember(tempJsonObj);
-				addFollow(sId, tempMember);
+				Member tempMember = commonServiceImpl.reduceMember(tempToken);
+				addFollow(sId, jsonObj,tempMember.getId());
 				JSONObject obj = new JSONObject();
 				obj.put("urlToken", tempToken);
 				obj.put("count", tempMember.getFollows());

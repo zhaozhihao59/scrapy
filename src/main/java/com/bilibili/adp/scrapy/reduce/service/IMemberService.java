@@ -65,4 +65,6 @@ public interface IMemberService{
 	 */
 	void delByIds(String[] ids);
 
+	void reload();
+
 }

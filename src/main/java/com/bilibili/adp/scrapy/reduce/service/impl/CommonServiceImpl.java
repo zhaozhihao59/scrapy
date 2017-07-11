@@ -27,6 +27,8 @@ import com.alibaba.fastjson.JSON;
 import com.alibaba.fastjson.JSONArray;
 import com.alibaba.fastjson.JSONObject;
 import com.alibaba.fastjson.JSONPObject;
+import com.bilibili.adp.scrapy.base.aop.DBUseTimeServiceImpl;
+import com.bilibili.adp.scrapy.base.aop.ReduceMember;
 import com.bilibili.adp.scrapy.base.util.HttpUtil;
 import com.bilibili.adp.scrapy.base.util.Utils;
 import com.bilibili.adp.scrapy.reduce.entity.Concern;
@@ -46,6 +48,8 @@ public class CommonServiceImpl implements ICommonService{
 	@Resource
 	private IConcernService  concernService;
 	@Resource
+	private DBUseTimeServiceImpl dbUseTimeServiceImpl;
+	@Resource
 	private TaskCommonServiceImpl taskCommonServiceImpl;
 	private Log logger = LogFactory.getLog(getClass());
 	public static List<Header> headerList = new ArrayList<>();
@@ -60,7 +64,21 @@ public class CommonServiceImpl implements ICommonService{
 	 	taskCommonServiceImpl.reduceConcern(curMember.getId(), urlToken, curMember.getConcerns());
 	 	
 	}
-	
+	@Override
+	@ReduceMember(cacheName = "reduceMemberVal",key = "#urlToken")
+	public Member reduceMember(String urlToken) throws Exception{
+		long start = System.currentTimeMillis();
+		JSONObject tempJson = taskCommonServiceImpl.getJsonObject(urlToken);
+		long end = System.currentTimeMillis();
+		dbUseTimeServiceImpl.submit("getMemberNet", (end - start));
+		Member tempMember = addMember(tempJson);
+		tempMember.setMemberData(null);
+		tempMember.setDescribe(null);
+		tempMember.setIntroduce(null);
+		tempMember.setUserName(null);
+		tempMember.setPicUrl(null);
+		return tempMember;
+	}
 	
 	public void reduceMembers(List<JSONObject> userList,Boolean flag) throws Exception{
 		for (JSONObject jsonObject : userList) {
@@ -89,7 +107,6 @@ public class CommonServiceImpl implements ICommonService{
 	 	item.setMemberData(jsonObj.toJSONString());
 	 	Member temp = memberService.add(item);
 	 	item.setId(temp.getId());
-	 	Member resultMember = new Member();
 	 	return item;
 	}
 	

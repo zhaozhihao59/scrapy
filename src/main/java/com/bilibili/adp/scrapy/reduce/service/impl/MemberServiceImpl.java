@@ -11,6 +11,7 @@ import org.springframework.transaction.annotation.Transactional;
 
 import com.bilibili.adp.scrapy.base.aop.MyReduce;
 import com.bilibili.adp.scrapy.base.page.PageResult;
+import com.bilibili.adp.scrapy.base.util.RedisCacheUtil;
 import com.bilibili.adp.scrapy.reduce.dao.IMemberDao;
 import com.bilibili.adp.scrapy.reduce.dto.MemberCondition;
 import com.bilibili.adp.scrapy.reduce.entity.Member;
@@ -28,8 +29,8 @@ public class MemberServiceImpl implements IMemberService{
 
 	@Resource(name = "memberDaoImpl")
 	private IMemberDao memberDao;
-
-
+	@Resource
+	private RedisCacheUtil redisCacheUtil;
 
 	/**
 	 * 查询所有用户
@@ -109,6 +110,27 @@ public class MemberServiceImpl implements IMemberService{
 	 */
 	public void delByIds(String[] ids){
 		memberDao.delByIds(ids);
+	}
+
+	@Override
+	public void reload() {
+		MemberCondition condition = new MemberCondition();
+		int count = getMemberByPageCount(condition);
+		PageResult<Member> pageResult = new PageResult<>();
+		
+		pageResult.setRows(count);
+		pageResult.setPageSize(500);
+		int page = pageResult.getAllPages();
+		for (int i = 1; i <= page; i++) {
+			pageResult.setCurrentPage(i);
+			RowBounds rowBounds = new RowBounds(pageResult.getCurrentPageIndex(),pageResult.getPageSize());
+			List<Member> list = memberDao.listMemberByPage(rowBounds,condition);
+			for (Member item : list) {
+				redisCacheUtil.putCacheValue("reduceMemberVal", "reduceMemberVal" + item.getUserId(), item);
+			}
+		}
+		
+		
 	}
 
 }

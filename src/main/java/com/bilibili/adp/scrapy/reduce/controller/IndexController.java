@@ -14,6 +14,7 @@ import com.bilibili.adp.scrapy.base.aop.DBUseTimeServiceImpl;
 import com.bilibili.adp.scrapy.base.controller.BaseController;
 import com.bilibili.adp.scrapy.reduce.Task;
 import com.bilibili.adp.scrapy.reduce.service.ICommonService;
+import com.bilibili.adp.scrapy.reduce.service.IMemberService;
 
 import io.swagger.annotations.ApiOperation;
 import io.swagger.annotations.ApiParam;
@@ -25,6 +26,8 @@ public class IndexController extends BaseController{
 	private Task task;
 	@Resource
 	private ICommonService commonService;
+	@Resource
+	private IMemberService memberService;
 	@Resource
 	private DBUseTimeServiceImpl dbUseTimeServiceImpl;
 	@ApiOperation("存入url")
@@ -40,7 +43,7 @@ public class IndexController extends BaseController{
 		return map;
 	}
 	
-	@ApiOperation("存入url")
+	@ApiOperation("开始")
 	@RequestMapping(value = "/start")
 	@ResponseBody
 	public Map<String, Object> start(
@@ -50,6 +53,16 @@ public class IndexController extends BaseController{
 		Map<String, Object> map = new HashMap<>();
 		map.put("status", Status.success);
 		commonService.reduceZhiHuUser(url_token);
+		return map;
+	}
+	
+	@ApiOperation("reload 用户数据")
+	@RequestMapping(value = "/reload")
+	@ResponseBody
+	public Map<String, Object> reload() throws Exception{
+		memberService.reload();
+		Map<String, Object> map = new HashMap<>();
+		map.put("status", Status.success);
 		return map;
 	}
 	@RequestMapping(value = "/hello")

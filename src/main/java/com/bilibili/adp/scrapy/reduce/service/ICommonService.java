@@ -10,6 +10,8 @@ public interface ICommonService {
 	void reduceZhiHuUser(String url_token) throws Exception;
 
 	Member addMember(JSONObject tempJsonObj);
+	
+	Member reduceMember(String urlToken) throws Exception;
 
 	void reduceMembers(List<JSONObject> list, Boolean b) throws Exception;
 }
