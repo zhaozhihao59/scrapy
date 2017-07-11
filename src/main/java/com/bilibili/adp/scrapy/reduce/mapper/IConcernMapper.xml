@@ -132,10 +132,7 @@
 		user_name = #{userName},
 		sex = #{sex},
 		introduce = #{introduce},
-		pic_url = #{picUrl},
-		ctime = #{ctime},
-		utime = #{utime},
-		is_delete = #{isDelete}
+		pic_url = #{picUrl}
 		WHERE ID = #{id}
 	</update>
 
