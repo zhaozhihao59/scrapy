@@ -75,7 +75,7 @@
 	</select>
 
 	<select id="listMemberByPage" resultMap="memberResultMap">
-		SELECT <include refid="allColumnSql"/>
+		SELECT <include refid="reloadMember"/>
 		FROM member o
 		WHERE 1=1 <include refid="searchConditionSql"/>
 	</select>
