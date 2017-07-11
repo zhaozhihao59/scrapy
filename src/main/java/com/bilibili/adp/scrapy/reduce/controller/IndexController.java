@@ -5,6 +5,7 @@ import java.util.Map;
 
 import javax.annotation.Resource;
 
+import org.apache.http.message.BasicHeader;
 import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
@@ -15,6 +16,7 @@ import com.bilibili.adp.scrapy.base.controller.BaseController;
 import com.bilibili.adp.scrapy.reduce.Task;
 import com.bilibili.adp.scrapy.reduce.service.ICommonService;
 import com.bilibili.adp.scrapy.reduce.service.IMemberService;
+import com.bilibili.adp.scrapy.reduce.service.impl.CommonServiceImpl;
 
 import io.swagger.annotations.ApiOperation;
 import io.swagger.annotations.ApiParam;
@@ -70,5 +72,17 @@ public class IndexController extends BaseController{
 	public String hello(){
 		dbUseTimeServiceImpl.submit("hello", 2);
 		return "hello";
+	}
+	@ApiOperation("reload 用户数据")
+	@RequestMapping(value = "/putAuth")
+	@ResponseBody
+	public Map<String, Object> putAuth(
+			@RequestParam(name = "auth",required = true) @ApiParam("请求的url") String auth
+			) throws Exception{
+		CommonServiceImpl.headerList.remove(1);
+		CommonServiceImpl.headerList.add(new BasicHeader("authorization", auth));
+		Map<String, Object> map = new HashMap<>();
+		map.put("status", Status.success);
+		return map;
 	}
 }
