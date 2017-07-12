@@ -45,10 +45,10 @@ public class Application
 	@Bean
 	public Executor myExecutor(){
 		ThreadPoolTaskExecutor executor = new ThreadPoolTaskExecutor();
-		executor.setCorePoolSize(2);
+		executor.setCorePoolSize(3);
 //		env.getProperty("poolSize",Integer.class)
 //		env.getProperty("maxPoolSize",Integer.class)
-		executor.setMaxPoolSize(2);
+		executor.setMaxPoolSize(3);
 		executor.initialize();
 		return executor;
 	}

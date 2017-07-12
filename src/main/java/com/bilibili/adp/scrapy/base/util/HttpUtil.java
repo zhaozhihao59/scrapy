@@ -1,9 +1,11 @@
 package com.bilibili.adp.scrapy.base.util;
 
+import java.net.URI;
 import java.nio.charset.Charset;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
+import java.util.Random;
 import java.util.Map.Entry;
 
 import org.apache.commons.logging.Log;
@@ -20,6 +22,7 @@ import org.apache.http.client.methods.HttpPost;
 import org.apache.http.entity.StringEntity;
 import org.apache.http.impl.client.CloseableHttpClient;
 import org.apache.http.impl.client.HttpClients;
+import org.apache.http.message.BasicHeader;
 import org.apache.http.message.BasicNameValuePair;
 import org.apache.http.util.EntityUtils;
 
@@ -29,7 +32,20 @@ import com.alibaba.fastjson.JSONObject;
 public class HttpUtil {
 
 	private static Log logger = LogFactory.getLog(HttpUtil.class);
-
+	
+	private static ThreadLocal<HttpClient>  threadClients = new ThreadLocal<HttpClient>(){
+		@Override
+		protected HttpClient initialValue() {
+			// TODO Auto-generated method stub
+			return HttpClients.createDefault();
+		}
+	}; 
+	
+	private static ThreadLocal<HttpGet> threadGets = new ThreadLocal<HttpGet>(){
+		protected HttpGet initialValue() {
+			return new HttpGet();
+		};
+	};
 	/**
 	 * Get方式获取数据
 	 * @param url
@@ -37,34 +53,31 @@ public class HttpUtil {
 	 */
 	public static String loadContentByGetMethod(String url,List<Header> headers) throws Exception{
 		String result = null;
-		
+//		HttpClient httpClient = HttpClients.createDefault();
 		/* 1 生成 HttpClinet 对象并设置参数 */
-		HttpClient httpClient = HttpClients.createDefault(); 
-		
 		// 设置 Http 连接超时为10秒
 //		httpClient.
 //		.getHttpConnectionManager().getParams().setConnectionTimeout(10000);
 		/* 2 生成 GetMethod 对象并设置参数 */
 		HttpGet getMethod = new HttpGet(url);
 		try {
+//			getMethod.setURI(URI.create(url));
 			for (Header header : headers) {
 				getMethod.addHeader(header);
 			}
-			
+//			
 			// 设置 get 请求超时为 10 秒
-			RequestConfig requestConfig = RequestConfig.custom().setSocketTimeout(10000).setConnectTimeout(10000).setConnectionRequestTimeout(10000).build();
+			RequestConfig requestConfig = RequestConfig.custom().build();
 			getMethod.setConfig(requestConfig);
 //			getMethod.getParams().setParameter(HttpMethodParams.SO_TIMEOUT, 10000);
 			// 设置请求重试处理，用的是默认的重试处理：请求三次
 //			getMethod.getParams().setParameter(HttpMethodParams.RETRY_HANDLER,new DefaultHttpMethodRetryHandler(3,true));
 			/* 3 执行 HTTP GET 请求 */
-			 HttpResponse statusResponse = httpClient.execute(getMethod);
+			 HttpResponse statusResponse = threadClients.get().execute(getMethod);
 			/* 4 判断访问的状态码 */
 			if (statusResponse.getStatusLine().getStatusCode() != HttpStatus.SC_OK) {
 				logger.debug("GET请求失败: " + statusResponse.getStatusLine());
 			}
-
-
 			// 读取 HTTP 响应内容，这里简单打印网页内容
 			// 读取为字节数组
 			result = EntityUtils.toString(statusResponse.getEntity());
@@ -74,7 +87,7 @@ public class HttpUtil {
 			throw new Exception(e);
 		} finally {
 			/* 6 .释放连接 */
-			getMethod.releaseConnection();
+//			getMethod.releaseConnection();
 		}
 		logger.debug("读取数据为："+result);
 		
@@ -155,8 +168,34 @@ public class HttpUtil {
 		
 		return result;
 	}
-	
+	public static List<Header> headerList = new ArrayList<>();
+	static{
+		headerList.add(new BasicHeader("User-Agent", "Mozilla/5.0 (Windows NT 10.0; WOW64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/59.0.3071.115 Safari/537.36"));
+		headerList.add(new BasicHeader("Connection", "keep-alive"));
+		headerList.add(new BasicHeader("authorization", "Bearer Mi4wQUFEQUdHTWZBQUFBTUFMOEYtOTFDeGNBQUFCaEFsVk5kWFZyV1FCZlcwaG9nelhIU01mbVZYM0U0T2MzMm5vQ3FR|1497622645|455e71adc1071b6f4f2d58bbef6381cfb9b7fbab"));
+	}
 	public static void main(String[] args) throws Exception {
+		List<String> list = new ArrayList<>();
+		list.add("miao-ying");
+		list.add("ku-rong-53-87");
+		list.add("dao-sen-sen");
+		list.add("hua-zhuo-53");
+		list.add("yin-jiao-shou-32");
+		list.add("ling-hu-fu-gui");
+		list.add("cai-tong");
+		list.add("libiubiu");
+		list.add("xu-zhi-ting-21");
+		list.add("liu-xiao-liu-9-24");
+		list.add("ikaros_kirishima");
+		list.add("i-li-si-hua-mao-zi");
+		list.add("i-li-si-hua-mao-zi");
+		for (int i = 0; i < 10; i++) {
+			String url = "https://www.zhihu.com/api/v4/members/"+list.get(new Random().nextInt(list.size()))+"?include=locations%2Cemployments%2Cgender%2Ceducations%2Cbusiness%2Cvoteup_count%2Cthanked_Count%2Cfollower_count%2Cfollowing_count%2Ccover_url%2Cfollowing_topic_count%2Cfollowing_question_count%2Cfollowing_favlists_count%2Cfollowing_columns_count%2Cavatar_hue%2Canswer_count%2Carticles_count%2Cpins_count%2Cquestion_count%2Ccolumns_count%2Ccommercial_question_count%2Cfavorite_count%2Cfavorited_count%2Clogs_count%2Cmarked_answers_count%2Cmarked_answers_text%2Cmessage_thread_token%2Caccount_status%2Cis_active%2Cis_bind_phone%2Cis_force_renamed%2Cis_bind_sina%2Cis_privacy_protected%2Csina_weibo_url%2Csina_weibo_name%2Cshow_sina_weibo%2Cis_blocking%2Cis_blocked%2Cis_following%2Cis_followed%2Cmutual_followees_count%2Cvote_to_count%2Cvote_from_count%2Cthank_to_count%2Cthank_from_count%2Cthanked_count%2Cdescription%2Chosted_live_count%2Cparticipated_live_count%2Callow_message%2Cindustry_category%2Corg_name%2Corg_homepage%2Cbadge%5B%3F(type%3Dbest_answerer)%5D.topics";
+			long start = System.currentTimeMillis();
+			System.out.println(loadContentByGetMethod(url, headerList));
+			long end = System.currentTimeMillis();
+			System.out.println((end-start));
+		}
 		
 	}
 }

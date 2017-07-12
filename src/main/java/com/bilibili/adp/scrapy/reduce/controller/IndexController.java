@@ -82,7 +82,7 @@ public class IndexController extends BaseController{
 	public Map<String, Object> putAuth(
 			@RequestParam(name = "auth",required = true) @ApiParam("请求的url") String auth
 			) throws Exception{
-		CommonServiceImpl.headerList.remove(1);
+		CommonServiceImpl.headerList.remove(CommonServiceImpl.headerList.size() - 1);
 		CommonServiceImpl.headerList.add(new BasicHeader("authorization", auth));
 		Map<String, Object> map = new HashMap<>();
 		map.put("status", Status.success);
