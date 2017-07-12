@@ -56,7 +56,7 @@ public class CommonServiceImpl implements ICommonService{
 	static{
 		headerList.add(new BasicHeader("User-Agent", "Mozilla/5.0 (Windows NT 10.0; WOW64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/59.0.3071.115 Safari/537.36"));
 		headerList.add(new BasicHeader("Connection", "keep-alive"));
-		headerList.add(new BasicHeader("authorization", "Bearer Mi4wQUJCTURPWU1ud2dBZ0FJZDl0c0VEQmNBQUFCaEFsVk5Ib09FV1FBLTN2SzlmV1V3ekh3VFAwbGItRHFIMnNwMzZB|1499264542|fd82d6e956e0f6a52b396f053526013ad4a6129a"));
+		headerList.add(new BasicHeader("authorization", "Bearer Mi4wQUFEQUdHTWZBQUFBTUFMOEYtOTFDeGNBQUFCaEFsVk5kWFZyV1FCZlcwaG9nelhIU01mbVZYM0U0T2MzMm5vQ3FR|1497622645|455e71adc1071b6f4f2d58bbef6381cfb9b7fbab"));
 	}
 	@Override
 	public void reduceZhiHuUser(String urlToken) throws Exception {
