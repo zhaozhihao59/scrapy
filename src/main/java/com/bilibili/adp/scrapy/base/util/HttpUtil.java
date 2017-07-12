@@ -199,7 +199,6 @@ public class HttpUtil {
 			System.out.println(loadContentByGetMethod(url, headerList));
 			long end = System.currentTimeMillis();
 			System.out.println((end-start));
-			TimeUnit.SECONDS.sleep(20);
 		}
 		
 	}

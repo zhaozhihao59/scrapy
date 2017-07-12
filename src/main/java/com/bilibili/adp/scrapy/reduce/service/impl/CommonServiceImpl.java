@@ -61,8 +61,9 @@ public class CommonServiceImpl implements ICommonService{
 	@Override
 	public void reduceZhiHuUser(String urlToken) throws Exception {
 	 	Member curMember = addMember(taskCommonServiceImpl.getJsonObject(urlToken));
-	 	taskCommonServiceImpl.reduceFollow(curMember.getId(), urlToken, curMember.getFollows());
 	 	taskCommonServiceImpl.reduceConcern(curMember.getId(), urlToken, curMember.getConcerns());
+	 	taskCommonServiceImpl.reduceFollow(curMember.getId(), urlToken, curMember.getFollows());
+	 	
 	 	
 	}
 	@Override
