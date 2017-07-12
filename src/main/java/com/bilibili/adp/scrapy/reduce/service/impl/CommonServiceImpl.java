@@ -71,6 +71,9 @@ public class CommonServiceImpl implements ICommonService{
 		long start = System.currentTimeMillis();
 		JSONObject tempJson = taskCommonServiceImpl.getJsonObject(urlToken);
 		long end = System.currentTimeMillis();
+		if(tempJson == null){
+			return null;
+		}
 		dbUseTimeServiceImpl.submit("getMemberNet", (end - start));
 		Member tempMember = addMember(tempJson);
 		tempMember.setMemberData(null);
@@ -95,6 +98,9 @@ public class CommonServiceImpl implements ICommonService{
 	
 	
 	public Member addMember(JSONObject jsonObj){
+		if(jsonObj == null){
+			return null;
+		}
 		Member item = new Member();
 	 	item.setIntroduce(jsonObj.getString("headline"));
 	 	item.setPicUrl(jsonObj.getString("avatar_url"));

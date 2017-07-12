@@ -80,7 +80,9 @@ public class InterceptReduceAOP {
         	return object;
         }
         Object target = point.proceed();
-        redisCacheUtil.putCacheValue(reduce.cacheName(), reduce.cacheName() + key, target);
+        if(target != null){
+        	redisCacheUtil.putCacheValue(reduce.cacheName(), reduce.cacheName() + key, target);
+        }
         return target;
 	}
 	
