@@ -64,5 +64,7 @@ public interface IConcernService{
 	 *@param item 你关注的人
 	 */
 	void delByIds(String[] ids);
+	
+	void testTranscation();
 
 }

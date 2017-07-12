@@ -110,6 +110,21 @@ public class ConcernServiceImpl implements IConcernService{
 	public void delByIds(String[] ids){
 		concernDao.delByIds(ids);
 	}
+
+	@Override
+	public void testTranscation() {
+		Concern item = new Concern();
+		item.setFollowId(100l);
+		item.setIntroduce("asdfasdf");
+		item.setSex(1);
+		item.setMenberId(1L);
+		item.setPicUrl("http://www.baidu.com/");
+		item.setUserName("zzhzzz");
+		item.setId(3L);
+		update(item);
+//		concernDao.add(item);
+		delByIds(new String[]{});
+	}
 	
 	
 

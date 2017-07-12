@@ -15,6 +15,7 @@ import com.bilibili.adp.scrapy.base.aop.DBUseTimeServiceImpl;
 import com.bilibili.adp.scrapy.base.controller.BaseController;
 import com.bilibili.adp.scrapy.reduce.Task;
 import com.bilibili.adp.scrapy.reduce.service.ICommonService;
+import com.bilibili.adp.scrapy.reduce.service.IConcernService;
 import com.bilibili.adp.scrapy.reduce.service.IMemberService;
 import com.bilibili.adp.scrapy.reduce.service.impl.CommonServiceImpl;
 
@@ -30,6 +31,8 @@ public class IndexController extends BaseController{
 	private ICommonService commonService;
 	@Resource
 	private IMemberService memberService;
+	@Resource
+	private IConcernService concernService;
 	@Resource
 	private DBUseTimeServiceImpl dbUseTimeServiceImpl;
 	@ApiOperation("存入url")
@@ -70,7 +73,7 @@ public class IndexController extends BaseController{
 	@RequestMapping(value = "/hello")
 	@ResponseBody
 	public String hello(){
-		dbUseTimeServiceImpl.submit("hello", 2);
+		
 		return "hello";
 	}
 	@ApiOperation("reload 用户数据")
@@ -79,7 +82,7 @@ public class IndexController extends BaseController{
 	public Map<String, Object> putAuth(
 			@RequestParam(name = "auth",required = true) @ApiParam("请求的url") String auth
 			) throws Exception{
-		CommonServiceImpl.headerList.remove(1);
+		CommonServiceImpl.headerList.remove(CommonServiceImpl.headerList.size() - 1);
 		CommonServiceImpl.headerList.add(new BasicHeader("authorization", auth));
 		Map<String, Object> map = new HashMap<>();
 		map.put("status", Status.success);

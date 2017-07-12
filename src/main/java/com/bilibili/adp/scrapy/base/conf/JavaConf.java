@@ -64,7 +64,7 @@ public class JavaConf {
 		sqlSessionFactoryBean.setDataSource(dataSource);
 		PathMatchingResourcePatternResolver resolver = new PathMatchingResourcePatternResolver();
 		sqlSessionFactoryBean.setConfigLocation(resolver.getResource("classpath:sqlmap-config.xml"));
-		sqlSessionFactoryBean.setMapperLocations(resolver.getResources("classpath:com/bilibili/**/mapper/*.xml"));
+		sqlSessionFactoryBean.setMapperLocations(resolver.getResources("classpath*:com/bilibili/**/mapper/*.xml"));
 		return sqlSessionFactoryBean;
 	}
 	
