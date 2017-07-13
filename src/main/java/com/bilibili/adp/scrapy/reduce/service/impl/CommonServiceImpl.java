@@ -1,11 +1,14 @@
 package com.bilibili.adp.scrapy.reduce.service.impl;
 
 import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.HashSet;
 import java.util.List;
 import java.util.Map;
 import java.util.Set;
+import java.util.concurrent.ConcurrentHashMap;
 import java.util.concurrent.TimeUnit;
+import java.util.concurrent.atomic.AtomicInteger;
 
 import javax.annotation.Resource;
 
@@ -52,19 +55,26 @@ public class CommonServiceImpl implements ICommonService{
 	@Resource
 	private TaskCommonServiceImpl taskCommonServiceImpl;
 	private Log logger = LogFactory.getLog(getClass());
-	public static List<Header> headerList = new ArrayList<>();
+	public static List<Header> tempHeaderList = new ArrayList<>();
+	public static AtomicInteger num = new AtomicInteger(1);
+	public static Map<Integer, List<Header>> userHeaderMap = new ConcurrentHashMap<>();
 	static{
-		headerList.add(new BasicHeader("User-Agent", "Mozilla/5.0 (Windows NT 10.0; WOW64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/59.0.3071.115 Safari/537.36"));
-		headerList.add(new BasicHeader("Connection", "keep-alive"));
-		headerList.add(new BasicHeader("authorization", "Bearer Mi4wQUFEQUdHTWZBQUFBTUFMOEYtOTFDeGNBQUFCaEFsVk5kWFZyV1FCZlcwaG9nelhIU01mbVZYM0U0T2MzMm5vQ3FR|1497622645|455e71adc1071b6f4f2d58bbef6381cfb9b7fbab"));
+		tempHeaderList.add(new BasicHeader("User-Agent", "Mozilla/5.0 (Windows NT 10.0; WOW64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/59.0.3071.115 Safari/537.36"));
+		tempHeaderList.add(new BasicHeader("Connection", "keep-alive"));
+		List<Header> tempList = new ArrayList<>();
+		tempList.addAll(tempHeaderList);
+		tempList.add(new BasicHeader("authorization", "oauth c3cef7c66a1843f8b3a9e6a1e3160e20"));
+		userHeaderMap.put(0,tempList);
+	}
+	
+	public static List<Header> getHeader(){
+		 return userHeaderMap.get(num.getAndIncrement()%userHeaderMap.size());
 	}
 	@Override
 	public void reduceZhiHuUser(String urlToken) throws Exception {
 	 	Member curMember = addMember(taskCommonServiceImpl.getJsonObject(urlToken));
 	 	taskCommonServiceImpl.reduceConcern(curMember.getId(), urlToken, curMember.getConcerns());
-	 	taskCommonServiceImpl.reduceFollow(curMember.getId(), urlToken, curMember.getFollows());
-	 	
-	 	
+//	 	taskCommonServiceImpl.reduceFollow(curMember.getId(), urlToken, curMember.getFollows());
 	}
 	@Override
 	@ReduceMember(cacheName = "reduceMemberVal",key = "#urlToken")
