@@ -67,7 +67,7 @@ public class HttpUtil {
 			}
 			
 			// 设置 get 请求超时为 10 秒
-			RequestConfig requestConfig = RequestConfig.custom().build();
+			RequestConfig requestConfig = RequestConfig.custom().setCookieSpec(CookieSpecs.STANDARD_STRICT).build();
 			getMethod.setConfig(requestConfig);
 			
 //			getMethod.getParams().setParameter(HttpMethodParams.SO_TIMEOUT, 10000);
