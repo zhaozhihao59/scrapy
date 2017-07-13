@@ -45,10 +45,10 @@ public class Application
 	@Bean
 	public Executor myExecutor(){
 		ThreadPoolTaskExecutor executor = new ThreadPoolTaskExecutor();
-		executor.setCorePoolSize(3);
+		executor.setCorePoolSize(1);
 //		env.getProperty("poolSize",Integer.class)
 //		env.getProperty("maxPoolSize",Integer.class)
-		executor.setMaxPoolSize(3);
+		executor.setMaxPoolSize(1);
 		executor.initialize();
 		return executor;
 	}
@@ -90,6 +90,7 @@ public class Application
 		return template;
 		
 	}
+	
 	@Bean
 	public RedisCacheManager cacheManager(RedisTemplate<String, Object> redisTemplate){
 		RedisCacheManager cacheManager = new RedisCacheManager(redisTemplate);

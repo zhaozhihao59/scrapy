@@ -1,10 +1,13 @@
 package com.bilibili.adp.scrapy.reduce.controller;
 
+import java.util.ArrayList;
 import java.util.HashMap;
+import java.util.List;
 import java.util.Map;
 
 import javax.annotation.Resource;
 
+import org.apache.http.Header;
 import org.apache.http.message.BasicHeader;
 import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.RequestMapping;
@@ -82,8 +85,9 @@ public class IndexController extends BaseController{
 	public Map<String, Object> putAuth(
 			@RequestParam(name = "auth",required = true) @ApiParam("请求的url") String auth
 			) throws Exception{
-		CommonServiceImpl.headerList.remove(CommonServiceImpl.headerList.size() - 1);
-		CommonServiceImpl.headerList.add(new BasicHeader("authorization", auth));
+		List<Header> tempList = new ArrayList<>();
+		tempList.addAll(CommonServiceImpl.tempHeaderList);
+		CommonServiceImpl.userHeaderMap.put( CommonServiceImpl.userHeaderMap.size(), tempList);
 		Map<String, Object> map = new HashMap<>();
 		map.put("status", Status.success);
 		return map;
