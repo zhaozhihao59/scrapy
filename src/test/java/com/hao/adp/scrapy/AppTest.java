@@ -71,10 +71,10 @@ public class AppTest {
 	@org.junit.Test
 	public void testRedis() {
 		String key  = "key";
-		System.out.println( redisTemplate.opsForValue().setIfAbsent(key, "val"));
+		System.out.println( redisTemplate.opsForValue().setIfAbsent(key, 1));
 		System.out.println(redisTemplate.opsForValue().get(key));
-		System.out.println(redisTemplate.opsForValue().setIfAbsent(key, "val"));
-		System.out.println(redisTemplate.expire(key, 10, TimeUnit.SECONDS));
+		System.out.println(redisTemplate.opsForValue().setIfAbsent(key, 1));
+		System.out.println(redisTemplate.expire(key, 100, TimeUnit.SECONDS));
 	}
 
 	@org.junit.Test
@@ -106,13 +106,13 @@ public class AppTest {
 	@SuppressWarnings("resource")
 	@Before
 	public void beforeOne(){
-		Settings esSettings = Settings.builder()
-				.put("cluster.name", "worke")
-//		        .put("client.transport.ignore_cluster_name", false)
-//		        .put("node.client", true)
-		        .put("client.transport.sniff", true)
-			    .build();
-		client = new PreBuiltTransportClient(esSettings).addTransportAddresses(new InetSocketTransportAddress(new InetSocketAddress("127.0.0.1", 9300)));
+//		Settings esSettings = Settings.builder()
+//				.put("cluster.name", "worke")
+////		        .put("client.transport.ignore_cluster_name", false)
+////		        .put("node.client", true)
+//		        .put("client.transport.sniff", true)
+//			    .build();
+//		client = new PreBuiltTransportClient(esSettings).addTransportAddresses(new InetSocketTransportAddress(new InetSocketAddress("127.0.0.1", 9300)));
 		System.out.println("connection success");
 		
 	}

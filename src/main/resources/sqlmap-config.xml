@@ -6,11 +6,11 @@
 		<property name="dialect" value="mysql" />
 	</properties>
 	<typeAliases>
-			<typeAlias alias="member" type="com.bilibili.adp.scrapy.reduce.entity.Member" />
-			<typeAlias alias="follow" type="com.bilibili.adp.scrapy.reduce.entity.Follow" />
-			<typeAlias alias="concern" type="com.bilibili.adp.scrapy.reduce.entity.Concern" />
+			<typeAlias alias="member" type="com.hao.adp.scrapy.reduce.entity.Member" />
+			<typeAlias alias="follow" type="com.hao.adp.scrapy.reduce.entity.Follow" />
+			<typeAlias alias="concern" type="com.hao.adp.scrapy.reduce.entity.Concern" />
 	</typeAliases>
 	<plugins>
-		<plugin interceptor="com.bilibili.adp.scrapy.base.page.PaginationInterceptor" />
+		<plugin interceptor="com.hao.adp.scrapy.base.page.PaginationInterceptor" />
 	</plugins>
 </configuration>

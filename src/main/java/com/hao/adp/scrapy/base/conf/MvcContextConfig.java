@@ -21,7 +21,7 @@ public class MvcContextConfig extends WebMvcConfigurationSupport {
 
 	@Override
 	protected void addResourceHandlers(ResourceHandlerRegistry registry) {
-		registry.addResourceHandler("/static/**").addResourceLocations("/static/").setCachePeriod(31556926);
+		registry.addResourceHandler("/web/**").addResourceLocations("/web/").setCachePeriod(31556926);
 		registry.addResourceHandler("/favicon.ico").addResourceLocations("/favicon.ico").setCachePeriod(31536000);
 	}
 
