@@ -20,11 +20,11 @@ import org.springframework.scheduling.annotation.EnableAsync;
 import org.springframework.scheduling.concurrent.ThreadPoolTaskExecutor;
 
 import redis.clients.jedis.JedisPoolConfig;
-import springfox.documentation.builders.ApiInfoBuilder;
-import springfox.documentation.service.ApiInfo;
-import springfox.documentation.spi.DocumentationType;
-import springfox.documentation.spring.web.plugins.Docket;
-import springfox.documentation.swagger2.annotations.EnableSwagger2;
+//import springfox.documentation.builders.ApiInfoBuilder;
+//import springfox.documentation.service.ApiInfo;
+//import springfox.documentation.spi.DocumentationType;
+//import springfox.documentation.spring.web.plugins.Docket;
+//import springfox.documentation.swagger2.annotations.EnableSwagger2;
 
 /**
  * Hello world!
@@ -34,7 +34,7 @@ import springfox.documentation.swagger2.annotations.EnableSwagger2;
 @Configuration
 @EnableAspectJAutoProxy
 @EnableAsync
-@EnableSwagger2
+//@EnableSwagger2
 @PropertySource(encoding = "utf-8" ,value ={"classpath:application.properties","classpath:redis.properties"})
 @EnableCaching
 public class Application 
@@ -45,15 +45,15 @@ public class Application
 	@Bean
 	public Executor myExecutor(){
 		ThreadPoolTaskExecutor executor = new ThreadPoolTaskExecutor();
-		executor.setCorePoolSize(1);
+		executor.setCorePoolSize(6);
 //		env.getProperty("poolSize",Integer.class)
 //		env.getProperty("maxPoolSize",Integer.class)
-		executor.setMaxPoolSize(1);
+		executor.setMaxPoolSize(6);
 		executor.initialize();
 		return executor;
 	}
 	
-	@Bean
+	/*@Bean
 	public Docket addUserDocket(){
 		Docket docket = new Docket(DocumentationType.SWAGGER_2);
 		docket.apiInfo(apiInfo());
@@ -62,7 +62,7 @@ public class Application
 	
 	public ApiInfo apiInfo(){
 		return  new ApiInfoBuilder().description("scrapy api").licenseUrl("http://www.bilibili.com/").title("zhaozhihao scrapy").build();
-	}
+	}*/
 	
 	@Bean
 	public JedisPoolConfig poolConfig(){
