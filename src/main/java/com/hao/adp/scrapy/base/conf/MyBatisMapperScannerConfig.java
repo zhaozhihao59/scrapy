@@ -23,7 +23,7 @@ public class MyBatisMapperScannerConfig {
 	public MapperScannerConfigurer mapperScannerConfigurer(){
 		MapperScannerConfigurer configurer = new MapperScannerConfigurer();
 		configurer.setAnnotationClass(Repository.class);
-		configurer.setBasePackage("com.bilibili");
+		configurer.setBasePackage("com.hao");
 		configurer.setSqlSessionFactoryBeanName("sqlSessionFactory");
 		return configurer;
 	}
