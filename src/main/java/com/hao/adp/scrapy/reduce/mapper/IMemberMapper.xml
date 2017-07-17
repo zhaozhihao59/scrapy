@@ -1,0 +1,175 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.bilibili.adp.scrapy.reduce.dao.IMemberDao">
+	<resultMap type="member" id="memberResultMap" >
+		<!--  -->
+		<result property="id" column="ID" />
+		<!-- 用户唯一标志 -->
+		<result property="userId" column="user_id" />
+		<!-- 用户名 -->
+		<result property="userName" column="user_name" />
+		<!-- 性别：0-男 1-女 -->
+		<result property="sex" column="sex" />
+		<!-- 简单的自我介绍 -->
+		<result property="introduce" column="introduce" />
+		<!-- 简单描述 -->
+		<result property="describe" column="c_describe" />
+		<!-- 用户数据 -->
+		<result property="memberData" column="member_data" />
+		
+		<result property="follows" column="follows"/>
+		<result property="concerns" column="concerns"/>
+		<!-- 创建时间 -->
+		<result property="ctime" column="ctime" />
+		<!-- 修改时间 -->
+		<result property="utime" column="utime" />
+		<!-- 0-未删除 1-已删除 -->
+		<result property="isDelete" column="is_delete" />
+	</resultMap>
+
+
+	<sql id="allColumnSql">
+		o.ID,
+		o.user_id,
+		o.user_name,
+		o.sex,
+		o.introduce,
+		o.c_describe,
+		o.member_data,
+		o.pic_url,
+		o.concerns,
+		o.follows
+	</sql>
+	<sql id="reloadMember">
+		o.ID,
+		o.user_id,
+		o.sex,
+		o.concerns,
+		o.follows
+	</sql>
+
+	<sql id="searchConditionSql">
+		<if test="condition.userId != null and condition.userId != ''">
+			AND o.user_id like '%${condition.userId}%'
+		</if>
+		<if test="condition.userName != null and condition.userName != ''">
+			AND o.user_name like '%${condition.userName}%'
+		</if>
+		<if test="condition.introduce != null and condition.introduce != ''">
+			AND o.introduce like '%${condition.introduce}%'
+		</if>
+		<if test="condition.describe != null and condition.describe != ''">
+			AND o.describe like '%${condition.describe}%'
+		</if>
+	</sql>
+
+	<select id="listMemberAll" resultMap="memberResultMap">
+		SELECT <include refid="allColumnSql"/>
+		FROM member o
+	</select>
+
+	<select id="getMemberByPageCount" resultType="int">
+		SELECT count(1)
+		FROM member o
+		WHERE 1=1 <include refid="searchConditionSql"/>
+	</select>
+
+	<select id="listMemberByPage" resultMap="memberResultMap">
+		SELECT <include refid="reloadMember"/>
+		FROM member o
+		WHERE 1=1 <include refid="searchConditionSql"/>
+	</select>
+
+	<select id="getMemberById" resultMap="memberResultMap">
+		SELECT <include refid="allColumnSql"/>
+		FROM member o
+		WHERE o.ID = #{id}
+	</select>
+	
+	<select id="getMemberByUserId" resultMap="memberResultMap">
+		SELECT ID
+		FROM member o
+		WHERE o.user_id = #{userId}
+	</select>
+	<insert id="add" parameterType="member" useGeneratedKeys="true" keyProperty="id">
+		INSERT INTO member
+		(
+		user_id,
+		user_name,
+		sex,
+		introduce,
+		c_describe,
+		member_data,
+		pic_url,
+		concerns,
+		follows
+		)
+		
+		VALUES
+		<![CDATA[
+		(
+		#{userId},
+		#{userName},
+		#{sex},
+		#{introduce},
+		#{describe},
+		#{memberData},
+		#{picUrl},
+		#{concerns},
+		#{follows}
+		)]]>
+		</insert>
+
+	<insert id="batchInsert" >
+		INSERT INTO member
+		(
+		user_id,
+		user_name,
+		sex,
+		introduce,
+		c_describe,
+		member_data,
+		pic_url,
+		concerns,
+		follows
+		)
+		VALUES
+		<foreach collection="list" index="index" item="item" separator=",">
+		<![CDATA[
+		(
+		#{item.userId},
+		#{item.userName},
+		#{item.sex},
+		#{item.introduce},
+		#{item.describe},
+		#{item.memberData},
+		#{item.picUrl},
+		#{item.concerns},
+		#{item.follows}
+		)]]>
+		</foreach>
+		
+		</insert>
+
+	<update id="update" parameterType="member">
+		UPDATE member SET
+		user_id = #{userId},
+		user_name = #{userName},
+		sex = #{sex},
+		introduce = #{introduce},
+		describe = #{describe},
+		ctime = #{ctime},
+		utime = #{utime},
+		is_delete = #{isDelete}
+		WHERE ID = #{id}
+	</update>
+
+	<delete id="delByIds">
+		DELETE FROM member
+		WHERE ID IN
+		<foreach collection="array" index="index" item="item" open="(" separator="," close=")">
+			#{item}
+		</foreach>
+	</delete>
+
+</mapper>
