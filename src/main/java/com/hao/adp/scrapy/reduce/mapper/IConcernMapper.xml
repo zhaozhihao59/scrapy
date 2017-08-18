@@ -9,7 +9,7 @@
 		<!-- 跟随者ID -->
 		<result property="followId" column="follow_id" />
 		<!-- 用户名 -->
-		<result property="userName1" column="user_name" />
+		<result property="userName" column="user_name" />
 		<!-- 性别：0-男 1-女 -->
 		<result property="sex" column="sex" />
 		<!-- 简单的自我介绍 -->
