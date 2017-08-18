@@ -28,7 +28,13 @@ public interface IConcernDao{
 	 *@return 总条数
 	 */
 	int getConcernByPageCount(@Param("condition") ConcernCondition condition);
-
+	/**
+	 * 分页查询
+	 *@param bounds RowBounds对象
+	 *@param condition 查询条件类
+	 *@return 总条数
+	 */
+	List<Concern> listConcernByPage(@Param("condition") ConcernCondition condition);
 	/**
 	 * 分页查询
 	 *@param bounds RowBounds对象

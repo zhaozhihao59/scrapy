@@ -65,6 +65,7 @@ public class JavaConf {
 		PathMatchingResourcePatternResolver resolver = new PathMatchingResourcePatternResolver();
 		sqlSessionFactoryBean.setConfigLocation(resolver.getResource("classpath:sqlmap-config.xml"));
 		sqlSessionFactoryBean.setMapperLocations(resolver.getResources("classpath*:com/hao/**/mapper/*.xml"));
+		
 		return sqlSessionFactoryBean;
 	}
 	
@@ -94,11 +95,6 @@ public class JavaConf {
 		resolver.setOrder(1);
 		return resolver;
 	}
-	
-//	@Bean
-//	public CustomJsonView jsonView(){
-//		return new CustomJsonView();
-//	}
 	
 	
 }
